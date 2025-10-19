@@ -202,6 +202,38 @@ footer {
   border: 1px solid rgba(26, 35, 126, 0.04);
 }
 
+.participant .left-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+}
+
+/* Delete/unregister button */
+.delete-btn {
+  flex: 0 0 auto;
+  background: transparent;
+  border: none;
+  color: #c62828;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background-color 0.12s, transform 0.08s;
+}
+
+.delete-btn:hover {
+  background-color: rgba(198,40,40,0.08);
+  transform: translateY(-1px);
+}
+
+/* If participants were rendered as a list, hide bullets */
+.participants ul, .participants li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 /* Avatar */
 .avatar {
   flex: 0 0 40px;

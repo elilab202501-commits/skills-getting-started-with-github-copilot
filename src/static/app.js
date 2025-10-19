@@ -37,8 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
           participantsHtml = details.participants
             .map(p => `
               <div class="participant">
-                <div class="avatar">${getInitials(p)}</div>
-                <div class="p-email" title="${p}">${p}</div>
+                <div class="left-col">
+                  <div class="avatar">${getInitials(p)}</div>
+                  <div class="p-email" title="${p}">${p}</div>
+                </div>
+                <button type="button" class="delete-btn" data-email="${p}" aria-label="Unregister">✖</button>
               </div>
             `).join("");
         } else {
@@ -86,6 +89,44 @@ document.addEventListener("DOMContentLoaded", () => {
               participantsDiv.style.maxHeight = "";
             }, 300);
           }
+        });
+
+        // Wire up delete/unregister buttons for participants
+        activityCard.querySelectorAll(".delete-btn").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const email = btn.dataset.email;
+            // send unregister request to server
+            try {
+              const resp = await fetch(
+                `/activities/${encodeURIComponent(name)}/unregister?email=${encodeURIComponent(email)}`,
+                { method: "POST" }
+              );
+
+              const result = await resp.json();
+
+              if (resp.ok) {
+                messageDiv.textContent = result.message;
+                messageDiv.className = "success";
+                messageDiv.classList.remove("hidden");
+                // Refresh activities to keep UI consistent
+                fetchActivities();
+              } else {
+                messageDiv.textContent = result.detail || "An error occurred";
+                messageDiv.className = "error";
+                messageDiv.classList.remove("hidden");
+              }
+
+              // Hide message after 5 seconds
+              setTimeout(() => {
+                messageDiv.classList.add("hidden");
+              }, 5000);
+            } catch (error) {
+              messageDiv.textContent = "Failed to unregister. Please try again.";
+              messageDiv.className = "error";
+              messageDiv.classList.remove("hidden");
+              console.error("Error unregistering:", error);
+            }
+          });
         });
       });
     } catch (error) {
